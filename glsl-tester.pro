@@ -6,8 +6,8 @@ TEMPLATE = app
 TARGET = glsl-tester
 INCLUDEPATH += .
 QT += widgets opengl
-CONFIG += debug
+CONFIG += 
 
 # Input
-HEADERS += glwidget.h
-SOURCES += glwidget.cpp main.cpp
+HEADERS += glwidget.h window.h
+SOURCES += glwidget.cpp main.cpp window.cpp

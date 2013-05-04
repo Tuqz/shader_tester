@@ -8,19 +8,21 @@
 #include "glwidget.h"
 
 class myWindow : public QWidget {
+	Q_OBJECT
 public:
-  myWindow(QWidget *parent = 0);
-  ~myWindow();
-  GLWidget *display;
-  
-  QPushButton *compile;
-  QPushButton *play;
-  QPushButton *restart;
-  QPushButton *pause;
-  
-  QPlainTextEdit *code;
+	myWindow(QWidget *parent = 0);
+	~myWindow();
+	
+	GLWidget *display;
 
-  QLabel *errors;
+	QPushButton *compile;
+	QPushButton *play;
+	QPushButton *restart;
+	QPushButton *pause;
+	
+	QPlainTextEdit *code;
+
+	QLabel *errors;
 };
 
 #endif

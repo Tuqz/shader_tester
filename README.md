@@ -4,13 +4,13 @@ Compilation:
 ============
 
 This is very simple, first run:
-> qmake
+`qmake`
 then:
-> make
+`make`
 
 Execution:
 ==========
 Running this program once compiled is simple, in bash shells and derivatives:
-> ./glsl-tester
+`./glsl-tester`
 
 Thats it, enjoy. :)
