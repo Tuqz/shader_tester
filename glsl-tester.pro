@@ -9,5 +9,7 @@ QT += widgets opengl
 CONFIG += 
 
 # Input
-HEADERS += glwidget.h window.h
-SOURCES += glwidget.cpp main.cpp window.cpp
+HEADERS += src/glwidget.h src/window.h
+SOURCES += src/glwidget.cpp src/main.cpp src/window.cpp
+OBJECTS_DIR = objs/
+MOC_DIR = src/
