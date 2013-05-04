@@ -1,4 +1,5 @@
 #include "glwidget.h"
+#include <iostream>
 
 GLWidget::GLWidget(const QGLFormat& settings, QWidget* parent) : QGLWidget(settings, parent) {
 	initializeGL();
@@ -9,8 +10,8 @@ void GLWidget::initializeGL() {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	if(!prepareShaderProgram("shader.vert")) {
-	  return;
+	if(!prepareShaderProgram("shader.vert", "#version 120 \nvoid main(void) { \ngl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n}")) {
+		return;
 	}
 	
 	float points[] = {-1.0f, -1.0f, 0.0f, 1.0f,
@@ -21,40 +22,42 @@ void GLWidget::initializeGL() {
 	vertex_buffer.setUsagePattern(QGLBuffer::StaticDraw);
 
 	if(!vertex_buffer.bind()) {
-	qWarning() << "Failed to bind vertex buffer to GPU";
-	return;
+		qWarning() << "Failed to bind vertex buffer to GPU";
+		return;
 	}
 
 	vertex_buffer.allocate(points, 4*4*sizeof(float));
 
 	if(!shader_prog.bind()) {
-	  qWarning() << "Couldn't bind shaders to GPU";
-	  return;
+		qWarning() << "Couldn't bind shaders to GPU";
+		return;
 	}
 
 	shader_prog.setAttributeBuffer("vertex", GL_FLOAT, 0, 4);
 	shader_prog.enableAttributeArray("vertex");
 }
 
-bool GLWidget::prepareShaderProgram(const QString& vertexShaderPath) {
+bool GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString frag_src) {
 	bool result = shader_prog.addShaderFromSourceFile(QGLShader::Vertex, vertexShaderPath);
 	if(!result) {
-	  qWarning() << shader_prog.log();
+		qWarning() << shader_prog.log();
 	}
-
-	QString frag_src = "#version 120 \nvoid main(void) { \ngl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n}";
 
 	result = shader_prog.addShaderFromSourceCode(QGLShader::Fragment, frag_src);
 	if(!result) {
-	  qWarning() << shader_prog.log();
+		qWarning() << shader_prog.log();
 	}
 	result = shader_prog.link();
 	
 	if(!result) {
-	  qWarning() << "Couldn't link shaders: " << shader_prog.log() << glGetError();
+		qWarning() << "Couldn't link shaders: " << shader_prog.log() << glGetError();
 	}
-
 	return result;
+}
+
+void GLWidget::shader_update(QString frag_src) {
+	prepareShaderProgram("shader.vert", frag_src);
+	shader_prog.bind();
 }
 
 void GLWidget::paintGL() {

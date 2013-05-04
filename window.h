@@ -23,6 +23,8 @@ public:
 	QPlainTextEdit *code;
 
 	QLabel *errors;
+public slots:
+	void shader_update();
 };
 
 #endif

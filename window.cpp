@@ -1,4 +1,5 @@
 #include "window.h"
+#include <iostream>
 
 myWindow::myWindow(QWidget *parent) : QWidget(parent) {
 	QGLFormat glSettings;
@@ -26,7 +27,7 @@ myWindow::myWindow(QWidget *parent) : QWidget(parent) {
 	code->setGeometry(325, 30, 310, 300);
 	errors->setGeometry(325, 335, 310, 150);
 
-	connect(compile, SIGNAL(clicked()), code, SLOT());
+	connect(compile, SIGNAL(clicked()), this, SLOT(shader_update()));
 	connect(play, SIGNAL(clicked()), code, SLOT());
 	connect(restart, SIGNAL(clicked()), code, SLOT());
 }
@@ -39,4 +40,8 @@ myWindow::~myWindow() {
 	delete code;
 	delete errors;
 	delete pause;
+}
+
+void myWindow::shader_update() {
+	display->shader_update(code->toPlainText());
 }
