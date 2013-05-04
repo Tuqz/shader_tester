@@ -2,8 +2,8 @@
 #define GLWIDGET_H
 
 #include <QtOpenGL/QGLWidget>
-#include <QtOpenGL/QGLBuffer>
-#include <QtOpenGL/QGLShaderProgram>
+#include <QtGui/QOpenGLBuffer>
+#include <QtGui/QOpenGLShaderProgram>
 
 class GLWidget : public QGLWidget {
 	Q_OBJECT
@@ -13,13 +13,13 @@ class GLWidget : public QGLWidget {
 	void shader_update(QString frag_src);
 
  protected:
-	virtual void initializeGL();
+	virtual void initialiseGL();
 	virtual void paintGL();
 	virtual void resizeGL(int w, int h);
 
 	private:
-	QGLShaderProgram shader_prog;
-	QGLBuffer vertex_buffer;
+	QOpenGLShaderProgram shader_prog;
+	QOpenGLBuffer vertex_buffer;
 };
 
 #endif

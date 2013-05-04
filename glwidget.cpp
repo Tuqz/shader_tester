@@ -1,11 +1,9 @@
 #include "glwidget.h"
-#include <iostream>
 
 GLWidget::GLWidget(const QGLFormat& settings, QWidget* parent) : QGLWidget(settings, parent) {
-	initializeGL();
 }
 
-void GLWidget::initializeGL() {
+void GLWidget::initialiseGL() {
 	QGLFormat glSettings = QGLWidget::format();
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -19,7 +17,7 @@ void GLWidget::initializeGL() {
 			  1.0f, 1.0f, 0.0f, 1.0f,
 			  -1.0f, 1.0f, 0.0f, 1.0f};
 	vertex_buffer.create();
-	vertex_buffer.setUsagePattern(QGLBuffer::StaticDraw);
+	vertex_buffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
 	if(!vertex_buffer.bind()) {
 		qWarning() << "Failed to bind vertex buffer to GPU";
@@ -38,12 +36,12 @@ void GLWidget::initializeGL() {
 }
 
 bool GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString frag_src) {
-	bool result = shader_prog.addShaderFromSourceFile(QGLShader::Vertex, vertexShaderPath);
+	bool result = shader_prog.addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderPath);
 	if(!result) {
 		qWarning() << shader_prog.log();
 	}
 
-	result = shader_prog.addShaderFromSourceCode(QGLShader::Fragment, frag_src);
+	result = shader_prog.addShaderFromSourceCode(QOpenGLShader::Fragment, frag_src);
 	if(!result) {
 		qWarning() << shader_prog.log();
 	}
@@ -56,6 +54,7 @@ bool GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString fra
 }
 
 void GLWidget::shader_update(QString frag_src) {
+	shader_prog.removeAllShaders();
 	prepareShaderProgram("shader.vert", frag_src);
 	shader_prog.bind();
 }
