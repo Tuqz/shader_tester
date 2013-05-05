@@ -54,13 +54,13 @@ bool GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString fra
 }
 
 void GLWidget::shader_update(QString frag_src) {
-	shader_prog.removeAllShaders(); //remove all shaders from program - start afresh
+	shader_prog.removeAllShaders();
 	prepareShaderProgram("shader.vert", frag_src);
 	shader_prog.bind();
 }
 
 void GLWidget::paintGL() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glDrawArrays(GL_TRIANGLES, 0, 4);
 }
 
