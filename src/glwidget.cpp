@@ -8,7 +8,7 @@ void GLWidget::initialiseGL() {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	if(!prepareShaderProgram("shader.vert", "#version 120 \nvoid main(void) { \ngl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n}")) { //set up shaderprogram with default shaders
+	if(prepareShaderProgram("shader.vert", "#version 120 \nvoid main(void) { \ngl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n}") != "") { //set up shaderprogram with default shaders
 		return;
 	}
 	
@@ -35,28 +35,34 @@ void GLWidget::initialiseGL() {
 	shader_prog.enableAttributeArray("vertex");
 }
 
-bool GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString frag_src) {
+QString GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString frag_src) {
 	bool result = shader_prog.addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderPath); //add vertex shader
+	QString logs = "";
 	if(!result) {
 		qWarning() << shader_prog.log();
+		logs += shader_prog.log();
 	}
 
 	result = shader_prog.addShaderFromSourceCode(QOpenGLShader::Fragment, frag_src); //add fragment shader
 	if(!result) {
-		qWarning() << shader_prog.log();
+	  	qWarning() << shader_prog.log();
+		logs += shader_prog.log();
 	}
 	result = shader_prog.link();
 	
 	if(!result) {
 		qWarning() << "Couldn't link shaders: " << shader_prog.log();
-	}
-	return result;
+		logs += shader_prog.log();
+	}	  
+
+	return logs;
 }
 
-void GLWidget::shader_update(QString frag_src) {
+QString GLWidget::shader_update(QString frag_src) {
 	shader_prog.removeAllShaders(); //remove all shaders from program - start afresh
-	prepareShaderProgram("shader.vert", frag_src);
+	QString errors = prepareShaderProgram("shader.vert", frag_src);
 	shader_prog.bind();
+	return errors;
 }
 
 void GLWidget::paintGL() {

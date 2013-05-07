@@ -1,5 +1,4 @@
 #include "window.h"
-#include <iostream>
 
 myWindow::myWindow(QWidget *parent) : QWidget(parent) {
 	QGLFormat glSettings;
@@ -43,5 +42,10 @@ myWindow::~myWindow() {
 }
 
 void myWindow::shader_update() {
-	display->shader_update(code->toPlainText()); //pass the shader_update the code in the text widget
+	QString error = display->shader_update(code->toPlainText()); //pass the shader_update the code in the text widget
+	if(error == "") {
+	  errors->setText("Shader compiled with no errors");
+	} else {
+	  errors->setText(error);
+	}
 }
