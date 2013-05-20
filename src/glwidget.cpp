@@ -8,42 +8,19 @@ void GLWidget::initialiseGL() {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	if(prepareShaderProgram("shader.vert", "#version 120 \nvoid main(void) { \ngl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n}") != "") { //set up shaderprogram with default shaders
-		return;
+	if(prepareShaderProgram(QString("#version 120 \nvoid main(void) { \ngl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n}")) != "") { //set up shaderprogram with default shaders
+		qWarning() << "Error in shaders!";
 	}
 	
-	float points[] = {-1.0f, -1.0f, 0.0f, 1.0f,
-			  1.0f, -1.0f, 0.0f, 1.0f,
-			  1.0f, 1.0f, 0.0f, 1.0f,
-			  -1.0f, 1.0f, 0.0f, 1.0f}; //array of coords of square.
-	vertex_buffer.create();
-	vertex_buffer.setUsagePattern(QOpenGLBuffer::StaticDraw); //create and configure vertex buffer
-
-	if(!vertex_buffer.bind()) {
-		qWarning() << "Failed to bind vertex buffer to GPU";
-		return;
-	}
-
-	vertex_buffer.allocate(points, 4*4*sizeof(float)); //give it enough space for the VBO
-
-	if(!shader_prog.bind()) {
+	/*if(!shader_prog.bind()) {
 		qWarning() << "Couldn't bind shaders to GPU";
 		return;
-	}
-
-	shader_prog.setAttributeBuffer("vertex", GL_FLOAT, 0, 4); //bind vertex attribute to shader
-	shader_prog.enableAttributeArray("vertex");
+	}*/
 }
 
-QString GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString frag_src) {
-	bool result = shader_prog.addShaderFromSourceFile(QOpenGLShader::Vertex, vertexShaderPath); //add vertex shader
+QString GLWidget::prepareShaderProgram(QString frag_src) {
 	QString logs = "";
-	if(!result) {
-		qWarning() << shader_prog.log();
-		logs += shader_prog.log();
-	}
-
-	result = shader_prog.addShaderFromSourceCode(QOpenGLShader::Fragment, frag_src); //add fragment shader
+	bool result = shader_prog.addShaderFromSourceCode(QOpenGLShader::Fragment, frag_src); //add fragment shader
 	if(!result) {
 	  	qWarning() << shader_prog.log();
 		logs += shader_prog.log();
@@ -60,14 +37,21 @@ QString GLWidget::prepareShaderProgram(const QString& vertexShaderPath, QString 
 
 QString GLWidget::shader_update(QString frag_src) {
 	shader_prog.removeAllShaders(); //remove all shaders from program - start afresh
-	QString errors = prepareShaderProgram("shader.vert", frag_src);
-	shader_prog.bind();
+	QString errors = prepareShaderProgram(frag_src);
+	//shader_prog.bind();
 	return errors;
 }
 
 void GLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear buffers
-	glDrawArrays(GL_TRIANGLES, 0, 4);
+	glUseProgram(shader_prog.programId());
+	glBegin(GL_QUADS);
+	glVertex2f(1.0, -1.0);
+	glVertex2f(1.0, 1.0);
+	glVertex2f(-1.0, 1.0);
+	glVertex2f(-1.0, -1.0);
+	glEnd();
+	glUseProgram(0);
 }
 
 void GLWidget::resizeGL(int w, int h) {

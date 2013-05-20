@@ -7,6 +7,8 @@ TARGET = glsl-tester
 INCLUDEPATH += .
 QT += widgets opengl
 CONFIG += 
+QMAKE_CXXFLAGS += -lGL -DGL_GLEXT_PROTOTYPES
+QMAKE_LDFLAGS += -lGL
 
 # Input
 HEADERS += src/glwidget.h src/window.h

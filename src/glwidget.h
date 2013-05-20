@@ -4,12 +4,13 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShaderProgram>
+#include <GL/gl.h>
 
 class GLWidget : public QGLWidget {
 	Q_OBJECT
 	  public:
 	GLWidget(const QGLFormat& settings, QWidget* parent = 0);
-	QString prepareShaderProgram(const QString& vertexShaderPath, QString frag_src);
+	QString prepareShaderProgram(QString frag_src);
 	QString shader_update(QString frag_src);
 
  protected:
@@ -19,7 +20,6 @@ class GLWidget : public QGLWidget {
 
 	private:
 	QOpenGLShaderProgram shader_prog;
-	QOpenGLBuffer vertex_buffer;
 };
 
 #endif
